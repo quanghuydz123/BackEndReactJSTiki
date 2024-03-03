@@ -25,7 +25,7 @@ const createProduct = (newProduct)=>{
             if(createProduct){
                 resolve({
                     status:"OK",
-                    message:"SUCCESS",
+                    message:"Thêm thành công",
                     data:createProduct
                 })
             }
@@ -45,7 +45,7 @@ const updateProduct = (productId,data)=>{
             })
             if(checkProduct===null){
                 resolve({
-                    status :"ok",
+                    status :"OK",
                     message:"The product is not defined"
                 })
             }
@@ -142,7 +142,7 @@ const deleteProduct = (productId)=>{
             })
             if(checkProduct===null){
                 resolve({
-                    status :"ok",
+                    status :"ERR",
                     message:"The product is not defined"
                 })
             }

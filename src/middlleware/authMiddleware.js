@@ -7,7 +7,7 @@ const authMiddleWare = (req,res,next)=>{
         if(err){
             return res.status(404).json({
                 message:"The authentication",
-                status:"Err"
+                status:"ERR"
             })
         }
         if(user.isAdmin){ //cho đi tiếp
@@ -17,7 +17,7 @@ const authMiddleWare = (req,res,next)=>{
         {
             return res.status(404).json({
                 message:"The authentication",
-                status:"Err",
+                status:"ERR",
             })
         }
     })
