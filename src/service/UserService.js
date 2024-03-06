@@ -140,6 +140,31 @@ const deleteUser = (userId)=>{
     })
 }
 
+const deleteManyUser = (ids)=>{
+    return new Promise(async (resolve,reject)=>{
+        try{
+            // const checkUser = await User.findOne({
+            //     _id:userId
+            // })
+            // if(checkUser===null){
+            //     resolve({
+            //         status :"ok",
+            //         message:"The user is not defined"
+            //     })
+            // }
+            await User.deleteMany({_id:ids})
+            resolve({
+                status:"OK",
+                message:"DELETE SUCCESS",
+            })
+            
+        }
+        catch(e){
+            reject(e)
+        }
+    })
+}
+
 const getAllUser = ()=>{
     return new Promise(async (resolve,reject)=>{
         try{
@@ -189,4 +214,5 @@ module.exports = {
     deleteUser,
     getAllUser,
     getDetailsUser,
+    deleteManyUser
 }
