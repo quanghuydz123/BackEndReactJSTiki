@@ -70,6 +70,18 @@ const getAllProduct = async (req,res)=>{
     }
 }
 
+const getAllType = async (req,res)=>{
+    try {
+        const response = await ProductService.getAllType()
+        return  res.status(200).json(response)
+
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+
 const deleteProduct = async (req,res)=>{
     try {
         const productId = req.params.id
@@ -114,5 +126,6 @@ module.exports = {
     getDetailsProduct,
     getAllProduct,
     deleteProduct,
-    deleteMany
+    deleteMany,
+    getAllType
 }

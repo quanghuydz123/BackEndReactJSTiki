@@ -91,16 +91,18 @@ const getAllProduct = (limit, page, sort ,filter)=>{
     return new Promise(async (resolve,reject)=>{
         try{
             const totalProduct = await Product.countDocuments()
-            if(filter){
+            if (filter) {
+                const totalProduct = await Product.countDocuments({'type':filter[1]})
                 const label = filter[0]
-                const allProductFilter = await Product.find({[label]: {'$regex' : filter[1]}}).limit(limit).skip((page - 1)*limit) 
-                //tìm kiếm theo LIKE trong sql
+                const filterValue = filter[1]
+                const regex = new RegExp(filterValue, 'i') // 'i' để không phân biệt chữ hoa chữ thường
+                const allProductFilter = await Product.find({ [label]: { '$regex': regex } }).limit(limit).skip((page - 1) * limit)
                 resolve({
-                    status:"OK",
-                    message:"SUCCESS",
-                    data:allProductFilter,
-                    total : totalProduct,
-                    totalPage : Math.ceil(totalProduct / limit),
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: allProductFilter,
+                    total: totalProduct,
+                    totalPage: Math.ceil(totalProduct / limit),
                 })
             }
             if(sort){
@@ -125,6 +127,24 @@ const getAllProduct = (limit, page, sort ,filter)=>{
                 total : totalProduct,
                 totalPage : Math.ceil(totalProduct / limit),
                 filter
+            })
+            
+        }
+        catch(e){
+            reject(e)
+        }
+    })
+}
+
+const getAllType = ()=>{
+    return new Promise(async (resolve,reject)=>{
+        try{
+            const allType = await Product.distinct('type')
+            resolve({
+                status:"OK",
+                message:"SUCCESS",
+                data:allType,
+               
             })
             
         }
@@ -183,5 +203,6 @@ module.exports = {
     getDetailsProduct,
     getAllProduct,
     deleteProduct,
-    deleteMany
+    deleteMany,
+    getAllType
 }
