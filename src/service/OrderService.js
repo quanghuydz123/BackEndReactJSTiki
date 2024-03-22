@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const Product = require('../models/ProductModel')
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user } = newOrder
+        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user,isPaid,paidAt } = newOrder
         try {
             const promies = orderItems.map(async (order,index)=>{
                 const productData = await Product.findOneAndUpdate({
@@ -32,6 +32,8 @@ const createOrder = (newOrder) => {
                             itemsPrice,
                             shippingPrice,
                             totalPrice,
+                            isPaid,
+                            paidAt, 
                             user: user,
                         })
                         if (createOrder) {

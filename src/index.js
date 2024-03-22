@@ -18,7 +18,6 @@ const port = process.env.PORT || 3001
 app.use(bodyParser.json())
 app.use(cookieParser())//phải khai báo để lấy cookie
 routes(app)
-
 //connectDB
 connectDB.connect()
 
