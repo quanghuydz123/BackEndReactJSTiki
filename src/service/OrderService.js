@@ -1,9 +1,10 @@
 const Order = require('../models/OrderModel')
 const bcrypt = require('bcrypt')
 const Product = require('../models/ProductModel')
+const EmailService = require('../service/EmailService')
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user,isPaid,paidAt } = newOrder
+        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user,isPaid,paidAt,email } = newOrder
         try {
             const promies = orderItems.map(async (order,index)=>{
                 const productData = await Product.findOneAndUpdate({
@@ -37,6 +38,7 @@ const createOrder = (newOrder) => {
                             user: user,
                         })
                         if (createOrder) {
+                            await EmailService.sendEmailCreateOrder(email,orderItems)
                             return {
                                 status: "OK",
                                 message: "Đặt hàng thành công",
@@ -68,7 +70,6 @@ const createOrder = (newOrder) => {
                     message: `Sản phẩm với id${newData.join(', ')} không đủ hàng`
                   });
                 }
-                
                 resolve({
                   status: 'OK',
                   message: 'Success'
@@ -82,6 +83,7 @@ const createOrder = (newOrder) => {
             
         }
         catch (e) {
+            console.log("e",e)
             reject(e)
         }
     })
