@@ -2,7 +2,7 @@ const Order = require('../models/OrderModel')
 const bcrypt = require('bcrypt')
 const Product = require('../models/ProductModel')
 const EmailService = require('../service/EmailService')
-const createOrder = (newOrder) => {
+const   createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
         const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user,isPaid,paidAt,email } = newOrder
         try {
@@ -20,31 +20,12 @@ const createOrder = (newOrder) => {
                     { new: true }
                 )
                 if (productData) {
-                    if(index === orderItems.length-1){
-                        const createOrder = await Order.create({
-                            orderItems,
-                            shippingAddress: {
-                                fullName,
-                                address,
-                                city,
-                                phone
-                            },
-                            paymentMethod,
-                            itemsPrice,
-                            shippingPrice,
-                            totalPrice,
-                            isPaid,
-                            paidAt, 
-                            user: user,
-                        })
-                        if (createOrder) {
-                            await EmailService.sendEmailCreateOrder(email,orderItems)
-                            return {
-                                status: "OK",
-                                message: "Đặt hàng thành công",
-                            }
-                        }
+                    return {
+                        status: 'OK',
+                        message: 'SUCCESS'
                     }
+        
+                    
     
                 }else{
                     return {
@@ -69,6 +50,30 @@ const createOrder = (newOrder) => {
                     status: 'ERR',
                     message: `Sản phẩm với id${newData.join(', ')} không đủ hàng`
                   });
+                }else{
+                    const createOrder = await Order.create({
+                        orderItems,
+                        shippingAddress: {
+                            fullName,
+                            address,
+                            city,
+                            phone
+                        },
+                        paymentMethod,
+                        itemsPrice,
+                        shippingPrice,
+                        totalPrice,
+                        isPaid,
+                        paidAt, 
+                        user: user,
+                    })
+                    if (createOrder) {
+                        await EmailService.sendEmailCreateOrder(email,orderItems)
+                        resolve( {
+                            status: "OK",
+                            message: "Đặt hàng thành công",
+                        })
+                    }
                 }
                 resolve({
                   status: 'OK',

@@ -183,7 +183,6 @@ const deleteProduct = (productId)=>{
 const deleteMany = (ids)=>{
     return new Promise(async (resolve,reject)=>{
         try{
-            
             await Product.deleteMany({_id: ids})
             resolve({
                 status:"OK",

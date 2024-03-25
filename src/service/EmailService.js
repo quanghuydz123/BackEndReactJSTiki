@@ -23,7 +23,7 @@ const sendEmailCreateOrder = async (email,orderItems)=>{
         <div>
             <img src=${order.image} alt="Sản phẩm"/>
         </div>
-        </div>`
+        </div>` 
         attachImage.push({path:order.image})
       })
 
