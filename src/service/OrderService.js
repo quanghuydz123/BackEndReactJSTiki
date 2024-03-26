@@ -4,7 +4,7 @@ const Product = require('../models/ProductModel')
 const EmailService = require('../service/EmailService')
 const   createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user,isPaid,paidAt,email } = newOrder
+        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, phone, user,isPaid,paidAt,email } = newOrder
         try {
             const promies = orderItems.map(async (order,index)=>{
                 const productData = await Product.findOneAndUpdate({
@@ -56,7 +56,6 @@ const   createOrder = (newOrder) => {
                         shippingAddress: {
                             fullName,
                             address,
-                            city,
                             phone
                         },
                         paymentMethod,
@@ -88,7 +87,6 @@ const   createOrder = (newOrder) => {
             
         }
         catch (e) {
-            console.log("e",e)
             reject(e)
         }
     })
@@ -112,6 +110,28 @@ const getAllOrder = (id)=>{
                 status:"ok",
                 message:"Success",
                 data:order
+            })
+        }
+        catch(e){
+            reject(e)
+        }
+    })
+}
+
+const getOrderAll = ()=>{
+    return new Promise(async (resolve,reject)=>{
+        try{
+            const allOrder = await Order.find()
+            if(allOrder === null){
+                resolve({
+                    status:"ok",
+                    message:"The product is not defined"
+                })
+            }
+            resolve({
+                status:"ok",
+                message:"Success",
+                data:allOrder
             })
         }
         catch(e){
@@ -179,7 +199,6 @@ const cancelOrderDetails = (id,data) => {
                 }
             })
             const results = await Promise.all(promises)
-            console.log("results",results)
             const newData = results && results[0] && results[0].id
             
             if(newData) {
@@ -201,5 +220,6 @@ module.exports = {
     createOrder,
     getAllOrder,
     cancelOrderDetails,
-    getDetailsOrder
+    getDetailsOrder,
+    getOrderAll
 }

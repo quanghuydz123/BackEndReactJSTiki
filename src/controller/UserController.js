@@ -1,5 +1,8 @@
 const UserService = require('../service/UserService')
 const JwtService = require('../service/jwtService')
+const EmailService = require('../service/EmailService')
+const User = require('../models/UserModel')
+
 const createUser= async (req,res)=>{
     try {
         const {name,email,password,confirmPassword,phone} = req.body
@@ -178,6 +181,39 @@ const logoutUser = async (req,res)=>{
         })
     }
 }
+
+const sendOptCreateAccount= async (req,res)=>{
+    try {
+        const {email,opt} = req.body
+        const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        const isCheckEmail = reg.test(email);
+        if (!isCheckEmail){
+            return res.status(200).json({
+                status:'ERR',
+                message:"The input is email"
+            })
+        }
+        const checkUser = await User.findOne({
+            email:email
+        })
+        if(checkUser!==null){
+            return res.status(200).json({
+                status :"ERR",
+                message:"The email on already"
+            })
+        }
+        await EmailService.sendEmailOptCreateAccount(email,opt) 
+        return res.status(200).json({
+            status :"OK",
+            message:"Đã gửi mã OTP vào gmail đăng ký vui lòng kiểm tra"
+        })
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+
 module.exports = {
     createUser,
     loginUser,
@@ -187,5 +223,6 @@ module.exports = {
     getDetailsUser,
     refreshToken,
     logoutUser,
-    deleteManyUser
+    deleteManyUser,
+    sendOptCreateAccount
 }
