@@ -53,7 +53,7 @@ const sendEmailOptCreateAccount = async (email,opt)=>{
     let info = await transporter.sendMail({
       from: 'vonguoita453@gmail.com', // sender address
       to: email, // list of receivers
-      subject: "Shopcuatoi gửi bạn mã đăng ký opt đăng ký tài khoản", // Subject line
+      subject: "Shopcuatoi gửi bạn mã opt đăng ký tài khoản", // Subject line
       text: "Hello world?", // plain text body
       html: `<div>
       <div>
@@ -66,8 +66,38 @@ const sendEmailOptCreateAccount = async (email,opt)=>{
     });
 }
 
+const sendEmailOptForgotPassword = async (email,opt)=>{
+  let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // Use `true` for port 465, `false` for all other ports
+      auth: {
+        user: process.env.MALL_ACCOUNT,
+        pass: process.env.MALL_PASSWORD,
+      },
+    });
+
+    
+
+    let info = await transporter.sendMail({
+      from: 'vonguoita453@gmail.com', // sender address
+      to: email, // list of receivers
+      subject: "Shopcuatoi gửi bạn mã opt lấy lại mật khẩu", // Subject line
+      text: "Hello world?", // plain text body
+      html: `<div>
+      <div>
+        Tài khoản lấy lại mật khẩu : ${email}
+      </div>
+      <div>
+        <span>opt của bạn là : ${opt}</span>
+      </div>
+      </div>`, // html body
+    });
+}
+
 
 module.exports = {
     sendEmailCreateOrder,
-    sendEmailOptCreateAccount
+    sendEmailOptCreateAccount,
+    sendEmailOptForgotPassword
 }

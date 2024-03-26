@@ -206,6 +206,37 @@ const getDetailsUser = (id)=>{
     })
 }
 
+const forgotPassword = (newUser)=>{
+    return new Promise(async (resolve,reject)=>{
+        const {email,password,confirmPassword} = newUser
+        
+        try{
+            const checkUser = await User.findOne({
+                email:email
+            })
+            if(checkUser===null){
+                resolve({
+                    status :"ERR",
+                    message:"Email không tồn tại"
+                })
+            }
+            const hash = bcrypt.hashSync(password,10) //mã hóa passwor
+            const UserUpdatePassword = await User.findByIdAndUpdate(checkUser._id,{password:hash},{new:true})
+            if(UserUpdatePassword){
+                resolve({
+                    status:"OK",
+                    message:"Đổi mật khẩu thành công",
+                    data:UserUpdatePassword
+                })
+            }
+            
+        }
+        catch(e){
+            console.log("e",e)
+            reject(e)
+        }
+    })
+}
 
 module.exports = {
     createUser,
@@ -214,5 +245,6 @@ module.exports = {
     deleteUser,
     getAllUser,
     getDetailsUser,
-    deleteManyUser
+    deleteManyUser,
+    forgotPassword
 }

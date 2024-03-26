@@ -214,6 +214,67 @@ const sendOptCreateAccount= async (req,res)=>{
     }
 }
 
+const sendOptForgotPassword= async (req,res)=>{
+    try {
+        const {email,opt} = req.body
+        const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        const isCheckEmail = reg.test(email);
+        if (!isCheckEmail){
+            return res.status(200).json({
+                status:'ERR',
+                message:"The input is email"
+            })
+        }
+        const checkUser = await User.findOne({
+            email:email
+        })
+        if(checkUser===null){
+            return res.status(200).json({
+                status :"ERR",
+                message:"Email không tồn tại trong hệ thống"
+            })
+        }
+        await EmailService.sendEmailOptForgotPassword(email,opt) 
+        return res.status(200).json({
+            status :"OK",
+            message:"Đã gửi mã OTP vào gmail đăng ký vui lòng kiểm tra"
+        })
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+
+const forgotPassword= async (req,res)=>{
+    try {
+        const {email,password,confirmPassword} = req.body
+        const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        const isCheckEmail = reg.test(email);
+        if( !email || !password || !confirmPassword){
+            return res.status(404).json({
+                status:'ERR',
+                message:"The input is required"
+            })
+        }else if (!isCheckEmail){
+            return res.status(404).json({
+                status:'ERR',
+                message:"The input is email"
+            })
+        }else if(password !== confirmPassword){
+            return res.status(404).json({
+                status:'ERR',
+                message:"The password is equal confirmPassword"
+            })
+        }
+        const response = await UserService.forgotPassword(req.body)
+        return  res.status(200).json(response)
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
 module.exports = {
     createUser,
     loginUser,
@@ -224,5 +285,7 @@ module.exports = {
     refreshToken,
     logoutUser,
     deleteManyUser,
-    sendOptCreateAccount
+    sendOptCreateAccount,
+    forgotPassword,
+    sendOptForgotPassword
 }
