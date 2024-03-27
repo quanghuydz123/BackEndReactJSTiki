@@ -3,6 +3,7 @@ const ProductRouter = require('./ProductRouter')
 const OrderRouter = require('./orderRouter')
 const PaymentRouter = require('./PaymentRouter')
 const LikeProductRouter = require('./LikeProductRouter')
+const CategoryRouter = require('./CategoryRouter')
 
 const routes = (app)=>{
 
@@ -11,6 +12,7 @@ const routes = (app)=>{
     app.use('/api/order',OrderRouter)
     app.use('/api/payment',PaymentRouter)
     app.use('/api/like-product',LikeProductRouter)
+    app.use('/api/category',CategoryRouter)
     // app.use('/',(req,res)=>{
     //     res.send('Home page')
         
