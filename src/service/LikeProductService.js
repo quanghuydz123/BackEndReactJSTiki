@@ -1,6 +1,4 @@
 const LikeProduct = require('../models/LikeProductModel')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 
 const createLikeProduct = (infoLike)=>{
     return new Promise(async (resolve,reject)=>{

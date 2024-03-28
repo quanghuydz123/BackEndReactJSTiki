@@ -1,5 +1,4 @@
 const Order = require('../models/OrderModel')
-const bcrypt = require('bcrypt')
 const Product = require('../models/ProductModel')
 const EmailService = require('../service/EmailService')
 const   createOrder = (newOrder) => {

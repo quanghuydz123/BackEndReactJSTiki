@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt')
 const Category = require('../models/CategoryModel')
 
 const createCategory = (Categorys)=>{
