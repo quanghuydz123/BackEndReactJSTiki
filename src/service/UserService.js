@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const { genneralAccessToken, genneralRefreshToken } = require('./jwtService')
 const createUser = (newUser)=>{
     return new Promise(async (resolve,reject)=>{
-        const {name,email,password,confirmPassword,phone} = newUser
+        const {name,email,password,confirmPassword,phone,status=true} = newUser
         try{
             const checkUser = await User.findOne({
                 email:email
@@ -20,7 +20,8 @@ const createUser = (newUser)=>{
                 name,
                 email,
                 password:hash,
-                phone
+                phone,
+                status
             })
             if(createUser){
                 resolve({
@@ -50,6 +51,13 @@ const loginUser = (userLogin)=>{
                     message:"The user is not defined"
                 })
             }
+            if(!checkUser?.status){
+                resolve({
+                    status :"ERR",
+                    message:"Tài khoản người dùng đã bị ngưng hoạt động"
+                })
+            }
+            
             const comparePassword = bcrypt.compareSync(password,checkUser.password)
             if(!comparePassword){
                 resolve({
@@ -127,7 +135,7 @@ const deleteUser = (userId)=>{
                     message:"The user is not defined"
                 })
             }
-            await User.findByIdAndDelete(userId)
+            await User.findByIdAndUpdate(checkUser._id,{status:false},{new:true})
             resolve({
                 status:"OK",
                 message:"DELETE SUCCESS",
@@ -152,7 +160,10 @@ const deleteManyUser = (ids)=>{
             //         message:"The user is not defined"
             //     })
             // }
-            await User.deleteMany({_id:ids})
+            await User.updateMany(
+                { _id: { $in: ids } },
+                { $set: { status : false } },
+            )
             resolve({
                 status:"OK",
                 message:"DELETE SUCCESS",
@@ -238,6 +249,31 @@ const forgotPassword = (newUser)=>{
     })
 }
 
+const restoreUser = (userId)=>{
+    return new Promise(async (resolve,reject)=>{
+        try{
+            const checkUserId = await User.findOne({
+                _id:userId
+            })
+            if(checkUserId===null){
+                resolve({
+                    status :"ERR",
+                    message:"The user is not defined"
+                })
+            }
+            const updateUser = await User.findByIdAndUpdate(userId,{status:true},{new:true})
+            resolve({
+                status:"OK",
+                message:"SUCCESS",
+                user:updateUser
+            })
+            
+        }
+        catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     createUser,
     loginUser,
@@ -246,5 +282,6 @@ module.exports = {
     getAllUser,
     getDetailsUser,
     deleteManyUser,
-    forgotPassword
+    forgotPassword,
+    restoreUser
 }

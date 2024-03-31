@@ -3,7 +3,7 @@ const ProductService = require('../service/ProductService')
 const createProduct = async (req,res)=>{
     try {
         const {name,image,type,price,countInStock,rating,description,discount} = req.body
-        if(!name || !image || !type || !price || !countInStock || !rating){
+        if(!name || !image  || !price || !countInStock){
             return res.status(404).json({
                 status:'ERR',
                 message:"The input is required"
@@ -61,6 +61,19 @@ const getAllProduct = async (req,res)=>{
     try {
         const { limit , page ,sort ,filter} = req.query
         const response = await ProductService.getAllProduct(limit || 100 ,page || 1,sort, filter)
+        return  res.status(200).json(response)
+
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+
+const getAllProductByParentCategory = async (req,res)=>{
+    try {
+        const { limit , page ,id ,filter} = req.query
+        const response = await ProductService.getAllProductByParentCategory(limit || 100 ,page || 1,id, filter)
         return  res.status(200).json(response)
 
     } catch (error) {
@@ -128,5 +141,6 @@ module.exports = {
     getAllProduct,
     deleteProduct,
     deleteMany,
-    getAllType
+    getAllType,
+    getAllProductByParentCategory
 }

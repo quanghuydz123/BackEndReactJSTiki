@@ -1,8 +1,9 @@
 const Product = require('../models/ProductModel')
+const Category = require('../models/CategoryModel')
 
 const createProduct = (newProduct)=>{
     return new Promise(async (resolve,reject)=>{
-        const {name,image,type,price,countInStock,rating,description,discount} = newProduct
+        const {name,image,type,price,countInStock,rating,description,discount,category} = newProduct
         try{
             const checkProduct = await Product.findOne({
                 name:name
@@ -17,6 +18,7 @@ const createProduct = (newProduct)=>{
                 name,
                 image,
                 type,
+                category,
                 price,
                 countInStock,
                 rating,
@@ -69,7 +71,7 @@ const getDetailsProduct = (id)=>{
         try{
             const checkProduct = await Product.findOne({
                 _id:id
-            })
+            }).populate('category')
             if(checkProduct === null){
                 resolve({
                     status:"ok",
@@ -93,11 +95,13 @@ const getAllProduct = (limit, page, sort ,filter)=>{
         try{
             const totalProduct = await Product.countDocuments()
             if (filter) {
-                const totalProduct = await Product.countDocuments({'type':filter[1]})
+
                 const label = filter[0]
                 const filterValue = filter[1]
+                const totalProduct = await Product.countDocuments({[label]:filter[1]})
                 const regex = new RegExp(filterValue, 'i') // 'i' để không phân biệt chữ hoa chữ thường
-                const allProductFilter = await Product.find({ [label]: { '$regex': regex } }).limit(limit).skip((page - 1) * limit)
+                //const allProductFilter = await Product.find({ [label]: { '$regex': regex } }).limit(limit).skip((page - 1) * limit).populate('category')
+                const allProductFilter = await Product.find({ [label]: { '$regex': regex } }).limit(limit).skip((page - 1) * limit).populate('category')
                 resolve({
                     status: "OK",
                     message: "SUCCESS",
@@ -120,7 +124,7 @@ const getAllProduct = (limit, page, sort ,filter)=>{
                     totalPage : Math.ceil(totalProduct / limit),
                 })
             }
-            const allProduct = await Product.find().limit(limit).skip((page - 1)*limit)
+            const allProduct = await Product.find().limit(limit).skip((page - 1)*limit).populate('category')
             resolve({
                 status:"OK",
                 message:"SUCCESS",
@@ -196,7 +200,59 @@ const deleteMany = (ids)=>{
     })
 }
 
+const getAllProductByParentCategory = (limit, page, id ,filter)=>{
+    return new Promise(async (resolve,reject)=>{    
+        try{
+            if (filter) {
+                const totalProduct = await Product.countDocuments({'category':filter})
+                //const label = filter[0]
+                //const filterValue = filter[0]
+                //const regex = new RegExp(filterValue, 'i') // 'i' để không phân biệt chữ hoa chữ thường
+                const allProductFilter = await Product.find({ category:filter }).limit(limit).skip((page - 1) * limit).populate('category')
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: allProductFilter,
+                    total: totalProduct,
+                    totalPage: Math.ceil(totalProduct / limit),
+                })
+            }
+            // const allProduct = await Product.find().limit(limit).skip((page - 1)*limit).populate('category')
+            // resolve({
+            //     status:"OK",
+            //     message:"SUCCESS",
+            //     data:allProduct,
+            //     total : totalProduct,
+            //     totalPage : Math.ceil(totalProduct / limit),
+            //     filter
+            // })
+            
+            const idCategoryChildForParentCategory = await Category.find({
+                parentId:id
+            }).select('_id')
 
+            const totalProduct = await Product.find({
+                category:idCategoryChildForParentCategory
+            }).countDocuments()
+            const allProduct = await Product.find({
+                category:idCategoryChildForParentCategory
+            }).limit(limit).skip((page - 1) * limit)
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data:allProduct,
+                total : totalProduct,
+                totalPage : Math.ceil(totalProduct/ limit),
+                filter
+            })
+
+            
+        }
+        catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     createProduct,
     updateProduct,
@@ -204,5 +260,6 @@ module.exports = {
     getAllProduct,
     deleteProduct,
     deleteMany,
-    getAllType
+    getAllType,
+    getAllProductByParentCategory
 }

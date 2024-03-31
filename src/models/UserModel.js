@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     address:{type: String},
     avatar:{type: String},
     city:{type: String},
+    status: {type: Boolean},
 },
 {
     timestamps: true

@@ -1,9 +1,9 @@
 const Category = require('../models/CategoryModel')
 
-const createCategory = (Categorys)=>{
-    return new Promise(async (resolve,reject)=>{
-        const {name,image} = Categorys
-        try{
+const createCategory = (Categorys) => {
+    return new Promise(async (resolve, reject) => {
+        const { name, image } = Categorys
+        try {
             const promises = [];
             for (let index = 0; index < name.length; index++) {
                 const item = name[index];
@@ -46,23 +46,23 @@ const createCategory = (Categorys)=>{
                 }
             }
             const results = await Promise.all(promises);
-            console.log("results",results)
-            const arrMessage = results.filter((item)=>item.status==="OK")
-            if(arrMessage.length!==0){
-                resolve( {
+            console.log("results", results)
+            const arrMessage = results.filter((item) => item.status === "OK")
+            if (arrMessage.length !== 0) {
+                resolve({
                     status: "OK",
                     message: "Thêm thành công",
                 })
             }
-            else{
-                resolve( {
+            else {
+                resolve({
                     status: "ERR",
                     message: "Lỗi rồi",
                 })
             }
-            
+
         }
-        catch(e){
+        catch (e) {
             reject(e)
         }
     })
@@ -79,7 +79,7 @@ const getAllCategoryChild = ()=>{
                 message:"SUCCESS",
                 data:allCategory
             })
-            
+
         }
         catch(e){
             reject(e)
@@ -87,39 +87,104 @@ const getAllCategoryChild = ()=>{
     })
 }
 
-const getAllCategoryParent = ()=>{
-    return new Promise(async (resolve,reject)=>{
-        try{
+const getAllCategoryChildAndParent = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allCategoryChildAndParent = await Category.aggregate([
+                {
+                    $match: {
+                        parentId: { $ne: '0' } // Loại bỏ documents với parentId = 0
+                    }
+                },
+                {
+
+                    $group: {
+                        _id: { parentId: "$parentId" }, // Gom nhóm theo product và user
+                        idChild: {$push: "$_id" },
+                        names: { $push: "$name" } // Liệt kê tất cả các tên trong mỗi nhóm
+                    }
+                }]
+
+            )
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: allCategoryChildAndParent
+            })
+
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
+}
+
+const getAllCategoryParent = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const allCategoryParent = await Category.find({
                 parentId: 0
             })
             resolve({
-                status:"OK",    
-                message:"SUCCESS",
-                data:allCategoryParent
+                status: "OK",
+                message: "SUCCESS",
+                data: allCategoryParent
             })
-            
+
         }
-        catch(e){
+        catch (e) {
             reject(e)
         }
     })
 }
 
-const getAllCategoryByIdparent = (data)=>{
-    return new Promise(async (resolve,reject)=>{
-        try{
+const getAllCategory = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allCategoryChildAndParent = await Category.aggregate([
+                {
+                    $match: {
+                        //parentId: { $ne: '0' } // Loại bỏ documents với parentId = 0
+                    }
+                },
+                {
+
+                    $group: {
+                        _id: { parentId: "$parentId" }, // Gom nhóm theo product và user
+                        idChild: {$push: "$_id" },
+                        names: { $push: "$name" } // Liệt kê tất cả các tên trong mỗi nhóm
+                    }
+                }]
+
+            )
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: allCategoryChildAndParent
+            })
+
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
+}
+
+
+const getAllCategoryByIdparent = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const allCategoryByIdParent = await Category.find({
                 parentId: data.parentId
             })
             resolve({
-                status:"OK",    
-                message:"SUCCESS",
-                data:allCategoryByIdParent
+                status: "OK",
+                message: "SUCCESS",
+                data: allCategoryByIdParent
             })
-            
+
         }
-        catch(e){
+        catch (e) {
             reject(e)
         }
     })
@@ -130,5 +195,7 @@ module.exports = {
     createCategory,
     getAllCategoryChild,
     getAllCategoryParent,
-    getAllCategoryByIdparent
+    getAllCategoryByIdparent,
+    getAllCategoryChildAndParent,
+    getAllCategory
 }

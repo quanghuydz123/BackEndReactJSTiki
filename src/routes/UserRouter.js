@@ -21,5 +21,6 @@ router.post('/send-opt-forgot-password',UserController.sendOptForgotPassword)
 
 router.put('/forgot-password',UserController.forgotPassword)
 
+router.put('/restore-user/:id',authUserMiddleWare, UserController.restoreUser)
 
 module.exports = router
