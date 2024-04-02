@@ -12,6 +12,5 @@ router.delete('/delete-product/:id',checkDeleteProduct,authMiddleWare ,ProductCo
 router.delete('/delete-many',authMiddleWare ,ProductController.deleteMany)
 router.get('/get-all-type' ,ProductController.getAllType)
 
-router.get('/getAllProductByParentCategory' ,ProductController.getAllProductByParentCategory)
 
 module.exports = router
