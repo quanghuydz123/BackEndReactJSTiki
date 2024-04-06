@@ -65,6 +65,17 @@ const getAllCategoryByIdparent= async (req,res)=>{
     }
 }
 
+const getCategoryByIdCategoryChild= async (req,res)=>{
+    try {
+        const response = await CategoryService.getCategoryByIdCategoryChild(req.query)
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+
 
 
     module.exports = {
@@ -73,5 +84,6 @@ const getAllCategoryByIdparent= async (req,res)=>{
     getAllCategoryParent,
     getAllCategoryByIdparent,
     getAllCategoryChildAndParent,
-    getAllCategory
+    getAllCategory,
+    getCategoryByIdCategoryChild
 }

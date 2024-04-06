@@ -3,7 +3,7 @@ const JwtService = require('../service/jwtService')
 const EmailService = require('../service/EmailService')
 const User = require('../models/UserModel')
 
-const createUser= async (req,res)=>{
+const   createUser= async (req,res)=>{
     try {
         const {name,email,password,confirmPassword,phone} = req.body
         const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/

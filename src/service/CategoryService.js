@@ -190,6 +190,25 @@ const getAllCategoryByIdparent = (data) => {
     })
 }
 
+const getCategoryByIdCategoryChild = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const categoryParent = await Category.find({
+                _id: data.childIdCategory
+            })
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: categoryParent
+            })
+
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
+}
+
 
 module.exports = {
     createCategory,
@@ -197,5 +216,6 @@ module.exports = {
     getAllCategoryParent,
     getAllCategoryByIdparent,
     getAllCategoryChildAndParent,
-    getAllCategory
+    getAllCategory,
+    getCategoryByIdCategoryChild
 }
