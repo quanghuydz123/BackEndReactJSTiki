@@ -3,7 +3,7 @@ const Category = require('../models/CategoryModel')
 
 const createProduct = (newProduct)=>{
     return new Promise(async (resolve,reject)=>{
-        const {name,image,type,price,countInStock,rating,description,discount,category} = newProduct
+        const {name,image,type,price,countInStock,rating,description,discount,category,specifications} = newProduct
         try{
             const checkProduct = await Product.findOne({
                 name:name
@@ -23,7 +23,8 @@ const createProduct = (newProduct)=>{
                 countInStock,
                 rating,
                 description,
-                discount
+                discount,
+                specifications
             })
             if(createProduct){
                 resolve({
@@ -200,15 +201,18 @@ const deleteMany = (ids)=>{
     })
 }
 
-const getAllProductByParentCategory = (limit, page, id ,filter)=>{
+const getAllProductByParentCategory = (limit, page, id ,filter,sortField,sortValue)=>{
     return new Promise(async (resolve,reject)=>{    
         try{
+            const sort = {};
+            sort[sortField] = parseInt(sortValue);
             if (filter) {
                 const totalProduct = await Product.countDocuments({'category':filter})
                 //const label = filter[0]
                 //const filterValue = filter[0]
                 //const regex = new RegExp(filterValue, 'i') // 'i' để không phân biệt chữ hoa chữ thường
-                const allProductFilter = await Product.find({ category:filter }).limit(limit).skip((page - 1) * limit).populate('category')
+                if(sortField){
+                    const allProductFilter = await Product.find({ category:filter }).limit(limit).skip((page - 1) * limit).sort(sort).populate('category')
                 resolve({
                     status: "OK",
                     message: "SUCCESS",
@@ -216,6 +220,16 @@ const getAllProductByParentCategory = (limit, page, id ,filter)=>{
                     total: totalProduct,
                     totalPage: Math.ceil(totalProduct / limit),
                 })
+                }else{
+                    const allProductFilter = await Product.find({ category:filter }).limit(limit).skip((page - 1) * limit).populate('category')
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: allProductFilter,
+                    total: totalProduct,
+                    totalPage: Math.ceil(totalProduct / limit),
+                })
+                }
             }
             // const allProduct = await Product.find().limit(limit).skip((page - 1)*limit).populate('category')
             // resolve({
@@ -234,17 +248,32 @@ const getAllProductByParentCategory = (limit, page, id ,filter)=>{
             const totalProduct = await Product.find({
                 category:idCategoryChildForParentCategory
             }).countDocuments()
-            const allProduct = await Product.find({
-                category:idCategoryChildForParentCategory
-            }).limit(limit).skip((page - 1) * limit)
-            resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data:allProduct,
-                total : totalProduct,
-                totalPage : Math.ceil(totalProduct/ limit),
-                filter
-            })
+            if(sortField){
+                const allProduct = await Product.find({
+                    category:idCategoryChildForParentCategory
+                }).limit(limit).skip((page - 1) * limit).sort(sort)
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data:allProduct,
+                    total : totalProduct,
+                    totalPage : Math.ceil(totalProduct/ limit),
+                    filter
+                })
+            }
+            else{
+                const allProduct = await Product.find({
+                    category:idCategoryChildForParentCategory
+                }).limit(limit).skip((page - 1) * limit)
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data:allProduct,
+                    total : totalProduct,
+                    totalPage : Math.ceil(totalProduct/ limit),
+                    filter
+                })
+            }
 
             
         }

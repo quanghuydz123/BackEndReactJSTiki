@@ -46,7 +46,6 @@ const createCategory = (Categorys) => {
                 }
             }
             const results = await Promise.all(promises);
-            console.log("results", results)
             const arrMessage = results.filter((item) => item.status === "OK")
             if (arrMessage.length !== 0) {
                 resolve({
@@ -91,17 +90,18 @@ const getAllCategoryChildAndParent = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const allCategoryChildAndParent = await Category.aggregate([
-                {
-                    $match: {
-                        parentId: { $ne: '0' } // Loại bỏ documents với parentId = 0
-                    }
-                },
+                // {
+                //     $match: {
+                //         parentId: { $ne: '0' } // Loại bỏ documents với parentId = 0
+                //     }
+                // },
                 {
 
                     $group: {
                         _id: { parentId: "$parentId" }, // Gom nhóm theo product và user
                         idChild: {$push: "$_id" },
-                        names: { $push: "$name" } // Liệt kê tất cả các tên trong mỗi nhóm
+                        names: { $push: "$name" }, // Liệt kê tất cả các tên trong mỗi nhóm
+                        image:{$push:'$image'}
                     }
                 }]
 

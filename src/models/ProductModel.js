@@ -13,6 +13,7 @@ const productSechema = new mongoose.Schema(
     countInStock: {type: Number, required: true},
     rating: {type: Number},
     description:{type:String},
+    specifications:{type:String},
     discount:{type: Number},
     selled:{type:Number},
 },

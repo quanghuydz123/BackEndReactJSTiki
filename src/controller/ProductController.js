@@ -72,8 +72,8 @@ const getAllProduct = async (req,res)=>{
 
 const getAllProductByParentCategory = async (req,res)=>{
     try {
-        const { limit , page ,id ,filter} = req.query
-        const response = await ProductService.getAllProductByParentCategory(limit || 100 ,page || 1,id, filter)
+        const { limit , page ,id ,filter,sortField,sortValue} = req.query
+        const response = await ProductService.getAllProductByParentCategory(limit || 100 ,page || 1,id, filter,sortField,sortValue)
         return  res.status(200).json(response)
 
     } catch (error) {
