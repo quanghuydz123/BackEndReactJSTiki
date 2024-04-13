@@ -14,7 +14,7 @@ const createCategory = (Categorys) => {
                             name: item,
                             image,
                             parentId: 0
-                        });
+                        })
                         if (createCategory) {
                             promises.push({
                                 status: 'OK',

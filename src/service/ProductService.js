@@ -201,12 +201,35 @@ const deleteMany = (ids)=>{
     })
 }
 
-const getAllProductByParentCategory = (limit, page, id ,filter,sortField,sortValue)=>{
+const getAllProductByParentCategory = (limit, page, id ,filter,sortField,sortValue,query)=>{
     return new Promise(async (resolve,reject)=>{    
         try{
             const sort = {};
             sort[sortField] = parseInt(sortValue);
-            if (filter) {
+            if(query){
+                const totalProduct = await Product.countDocuments({'name':query})
+                const regex = new RegExp(query, 'i')//để cho không phân biệt hoa thường
+                if(sortField){
+                    const allProductQuery = await Product.find({ name:{ '$regex': regex } }).limit(limit).skip((page - 1) * limit).sort(sort).populate('category')
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: allProductQuery,
+                    total: totalProduct,
+                    totalPage: Math.ceil(totalProduct / limit),
+                })
+                }else{
+                    const allProductQuery = await Product.find({ name:{ '$regex': regex } }).limit(limit).skip((page - 1) * limit).populate('category')
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: allProductQuery,
+                    total: totalProduct,
+                    totalPage: Math.ceil(totalProduct / limit),
+                })
+                }
+            }
+            else if (filter) {
                 const totalProduct = await Product.countDocuments({'category':filter})
                 //const label = filter[0]
                 //const filterValue = filter[0]
