@@ -2,13 +2,13 @@ const Category = require('../models/CategoryModel')
 
 const createCategory = (Categorys) => {
     return new Promise(async (resolve, reject) => {
-        const { name, image } = Categorys
+        const { names, image } = Categorys
         try {
             const promises = [];
-            for (let index = 0; index < name.length; index++) {
-                const item = name[index];
+            for (let index = 0; index < names.length; index++) {
+                const item = names[index];
                 if (index === 0) {
-                    const itemCategory = await Category.findOne({ name: item });
+                    const itemCategory = await Category.findOne({ names: item });
                     if (!itemCategory) {
                         const createCategory = await Category.create({
                             name: item,
@@ -28,14 +28,14 @@ const createCategory = (Categorys) => {
                         });
                     }
                 } else {
-                    const categoryFather = await Category.findOne({ name: name[0] });
+                    const categoryFather = await Category.findOne({ name: names[0] });
                     if (categoryFather) {
                         const itemCategoryChild = await Category.findOne({ name: item, parentId: categoryFather._id });
                         if (!itemCategoryChild) {
                             const createCategoryChild = await Category.create({
                                 name: item,
                                 parentId: categoryFather._id
-                            });
+                        });
                         } else {
                             promises.push({
                                 status: "ERR",
