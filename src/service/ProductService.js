@@ -282,6 +282,66 @@ const getAllProductByParentCategory = (limit, page, id ,filter,sortField,sortVal
         }
     })
 }
+
+const getAllProductGroupByChildCategory = ()=>{
+    return new Promise(async (resolve,reject)=>{    
+        try{
+            //const allProduct = await Product.find().populate('category').select('-image -description -specifications');
+            const allProduct = await Product.aggregate([
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "category",
+                        foreignField: "_id",
+                        as: "category"
+                    }
+                },
+                {
+                    $unwind: "$category"
+                },
+                {
+                    $group: {
+                        _id: "$category.parentId", // Nhóm theo parentId của category
+                        products: {
+                            $push: { // Tạo một mảng các sản phẩm thuộc cùng một category
+                                _id: "$_id",
+                                name: "$name",
+                                price: "$price",
+                                countInStock: "$countInStock",
+                                image:"$image",
+                                // createdAt: "$createdAt",
+                                // updatedAt: "$updatedAt",
+                                // __v: "$__v",
+                                selled: "$selled",
+                                discount: "$discount",
+                                description:"$description",
+                                specifications:"$specifications"
+                            }
+                        }
+                    }
+                },
+                // {
+                //     $lookup: {
+                //         from: "categories",
+                //         localField: "_id", // Sử dụng _id của category.parentId để kết nối với _id của category
+                //         foreignField: "_id",
+                //         as: "category"
+                //     }
+                // },
+                { $sort: { _id: 1 } }
+            ]);
+            resolve({
+                status:"OK",
+                message:"SUCCESS",
+                data:allProduct,
+            })
+            
+        }
+        catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     createProduct,
     updateProduct,
@@ -290,5 +350,6 @@ module.exports = {
     deleteProduct,
     deleteMany,
     getAllType,
-    getAllProductByParentCategory
+    getAllProductByParentCategory,
+    getAllProductGroupByChildCategory
 }

@@ -274,6 +274,45 @@ const restoreUser = (userId)=>{
         }
     })
 }
+
+const changePassword = (newUser)=>{
+    return new Promise(async (resolve,reject)=>{
+        const {email,password,passwordNew,confirmPasswordNew} = newUser
+        
+        try{
+            const checkUser = await User.findOne({
+                email:email
+            })
+            if(checkUser===null){
+                resolve({
+                    status :"ERR",
+                    message:"Email không tồn tại"
+                })
+            }
+            const comparePassword = bcrypt.compareSync(password,checkUser.password)
+            if(!comparePassword){
+                resolve({
+                    status :"ERR",
+                    message:"Mật khẩu hiện tại không chính xác"
+                })
+            }
+            const hash = bcrypt.hashSync(passwordNew,10) //mã hóa passwor
+            const UserUpdatePassword = await User.findByIdAndUpdate(checkUser._id,{password:hash},{new:true})
+            if(UserUpdatePassword){
+                resolve({
+                    status:"OK",
+                    message:"Đổi mật khẩu thành công",
+                    data:UserUpdatePassword
+                })
+            }
+            
+        }
+        catch(e){
+            console.log("e",e)
+            reject(e)
+        }
+    })
+}
 module.exports = {
     createUser,
     loginUser,
@@ -283,5 +322,6 @@ module.exports = {
     getDetailsUser,
     deleteManyUser,
     forgotPassword,
-    restoreUser
+    restoreUser,
+    changePassword
 }

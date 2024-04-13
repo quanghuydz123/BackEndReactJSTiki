@@ -23,4 +23,7 @@ router.put('/forgot-password',UserController.forgotPassword)
 
 router.put('/restore-user/:id',authUserMiddleWare, UserController.restoreUser)
 
+
+router.put('/change-password', UserController.changePassword)
+
 module.exports = router

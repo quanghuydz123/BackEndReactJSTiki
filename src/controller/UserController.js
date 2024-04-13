@@ -294,7 +294,23 @@ const restoreUser = async (req,res)=>{
         })
     }
 }
-
+const changePassword= async (req,res)=>{
+    try {
+        const {email,password,passwordNew,comfirmPasswordNew} = req.body
+        if(passwordNew !== comfirmPasswordNew){
+            return res.status(200).json({
+                status:'ERR',
+                message:"Mật khẩu mới và nhập lại mật khẩu mới không giống nhau"
+            })
+        }
+        const response = await UserService.changePassword(req.body)
+        return  res.status(200).json(response)
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
 module.exports = {
     createUser,
     loginUser,
@@ -308,5 +324,6 @@ module.exports = {
     sendOptCreateAccount,
     forgotPassword,
     sendOptForgotPassword,
-    restoreUser
+    restoreUser,
+    changePassword
 }
