@@ -237,16 +237,32 @@ const updateCategory = (idArr,image,nameArr) => {
     return new Promise(async (resolve, reject) => {
         try {
             const promises = [];
-            for (let index = 0; index < idArr.length; index++) {
-                if(index === 0 ){
-                    const itemCateogry = await Category.findOne({name:nameArr[0],_id: { $ne: idArr[index] } })
-                    if(itemCateogry){
-                        resolve({
-                            status: "ERR",
-                            message: "Tên thể loại đã có rồi",
-                        })
+            for (let index = 0; index < nameArr.length; index++) {
+                if(idArr[index]){
+                    if(index === 0 ){
+                        const itemCateogry = await Category.findOne({name:nameArr[0],_id: { $ne: idArr[index] } })
+                        if(itemCateogry){
+                            resolve({
+                                status: "ERR",
+                                message: "Tên thể loại đã có rồi",
+                            })
+                        }else{
+                            const updateCategory = await Category.findByIdAndUpdate(idArr[index],{image:image,name:nameArr[index]},{new:true})
+                            if(updateCategory){
+                                promises.push({
+                                    status: 'OK',
+                                    message: 'SUCCESS'
+                                });
+                            }else{
+                                promises.push({
+                                    status: 'ERR',
+                                    message: 'Lỗi rồi'
+                                });
+                            }
+                        }
+                        
                     }else{
-                        const updateCategory = await Category.findByIdAndUpdate(idArr[index],{image:image,name:nameArr[index]},{new:true})
+                        const updateCategory = await Category.findByIdAndUpdate(idArr[index],{name:nameArr[index]},{new:true})
                         if(updateCategory){
                             promises.push({
                                 status: 'OK',
@@ -259,19 +275,19 @@ const updateCategory = (idArr,image,nameArr) => {
                             });
                         }
                     }
-                    
                 }else{
-                    const updateCategory = await Category.findByIdAndUpdate(idArr[index],{name:nameArr[index]},{new:true})
-                    if(updateCategory){
-                        promises.push({
-                            status: 'OK',
-                            message: 'SUCCESS'
-                        });
-                    }else{
-                        promises.push({
-                            status: 'ERR',
-                            message: 'Lỗi rồi'
-                        });
+                    console.log("nameArr",nameArr[index])
+                    const itemCategoryChild = await Category.findOne({ name: nameArr[index], parentId: idArr[0] });
+                    if (!itemCategoryChild) {
+                        const createCategoryChild = await Category.create({
+                            name: nameArr[index],
+                            parentId: idArr[0]
+                    });
+                    } else {
+                        resolve({
+                            status: "ERR",
+                            message: "Tên thể loại con này đã có rồi",
+                        })
                     }
                 }
             }
@@ -282,6 +298,7 @@ const updateCategory = (idArr,image,nameArr) => {
                     status: "OK",
                     message: "Cập nhập thành công",
                 })
+                
             }
             else {
                 resolve({
