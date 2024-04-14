@@ -12,7 +12,7 @@ router.get('/get-all-category',CategoryController.getAllCategory)
 router.get('/get-category-parentByIdCategoryChild',CategoryController.getCategoryByIdCategoryChild)
 router.get('/get-details-categoryParent',CategoryController.getDetailsCategoryParent)
 
-router.put('/update-category',authMiddleWare,CategoryController.updateCategory)
+router.put('/update-category',CategoryController.updateCategory)
 
 
 module.exports = router
