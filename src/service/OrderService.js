@@ -3,7 +3,7 @@ const Product = require('../models/ProductModel')
 const EmailService = require('../service/EmailService')
 const   createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, phone, user,isPaid,paidAt,email } = newOrder
+        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, phone, user,isPaid,paidAt,email,deliveryMethod } = newOrder
         try {
             const promies = orderItems.map(async (order,index)=>{
                 const productData = await Product.findOneAndUpdate({
@@ -57,6 +57,7 @@ const   createOrder = (newOrder) => {
                             address,
                             phone
                         },
+                        deliveryMethod,
                         paymentMethod,
                         itemsPrice,
                         shippingPrice,
@@ -66,10 +67,11 @@ const   createOrder = (newOrder) => {
                         user: user,
                     })
                     if (createOrder) {
-                        await EmailService.sendEmailCreateOrder(email,orderItems)
+                        //await EmailService.sendEmailCreateOrder(email,orderItems) // gửi thông tin mua hàng đến gmail
                         resolve( {
                             status: "OK",
                             message: "Đặt hàng thành công",
+                            data:createOrder
                         })
                     }
                 }
@@ -77,7 +79,9 @@ const   createOrder = (newOrder) => {
                   status: 'OK',
                   message: 'Success'
                 });
-              } catch (error) {
+              } 
+              catch (error) {
+                console.log("error",error)
                 reject({
                   status: 'ERR',
                   message: 'Lỗi xảy ra khi thực hiện yêu cầu'
@@ -215,10 +219,79 @@ const cancelOrderDetails = (id,data) => {
             reject(e)
         }
     })}
+
+    const paidOrder = (OrderId)=>{
+        return new Promise(async (resolve,reject)=>{
+            try{
+                const date = new Date(); // Lấy thời gian hiện tại
+                const isoString = date.toISOString(); // Chuyển đổi thành chuỗi theo định dạng ISO 8601
+                const checkOrderId = await Order.findOne({
+                    _id:OrderId
+                })
+                if(checkOrderId===null){
+                    resolve({
+                        status :"ERR",
+                        message:"The order is not defined"
+                    })
+                }else if(checkOrderId?.isPaid){
+                    resolve({
+                        status :"ERR",
+                        message:"Đơn hàng này đã thanh toán rồi mà"
+                    })
+                }
+                console.log("checkOrderId",checkOrderId)
+                const updateOrder = await Order.findByIdAndUpdate(OrderId,{isPaid:true,paidAt:isoString},{new:true})
+                resolve({
+                    status:"Thanh toán thành công",
+                    message:"SUCCESS",
+                    user:updateOrder
+                })
+                
+            }
+            catch(e){
+                reject(e)
+            }
+        })
+    }
+
+    const comfirmDeliveryOrder = (OrderId)=>{
+        return new Promise(async (resolve,reject)=>{
+            try{
+                const date = new Date(); // Lấy thời gian hiện tại
+                const isoString = date.toISOString(); // Chuyển đổi thành chuỗi theo định dạng ISO 8601
+                const checkOrderId = await Order.findOne({
+                    _id:OrderId
+                })
+                if(checkOrderId===null){
+                    resolve({
+                        status :"ERR",
+                        message:"The order is not defined"
+                    })
+                }else if(checkOrderId?.isDelivered){
+                    resolve({
+                        status :"ERR",
+                        message:"Đơn hàng này đã xác nhận giao hàng rồi mà"
+                    })
+                }
+                const updateOrder = await Order.findByIdAndUpdate(OrderId,{isDelivered:true,deliveredAt:isoString},{new:true})
+                resolve({
+                    status:"OK",
+                    message:"Xác nhận giao hàng thành công",
+                    user:updateOrder
+                })
+                
+            }
+            catch(e){
+                reject(e)
+            }
+        })
+    }
 module.exports = {
     createOrder,
     getAllOrder,
     cancelOrderDetails,
     getDetailsOrder,
-    getOrderAll
+    getOrderAll,
+    paidOrder,
+    comfirmDeliveryOrder
 }

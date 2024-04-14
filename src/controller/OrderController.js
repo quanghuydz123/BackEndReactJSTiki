@@ -87,10 +87,50 @@ const cancelOrderDetails = async (req, res) => {
         })
     }
 }
+
+const paidOrder = async (req,res)=>{
+    try {
+        const orderId = req.params.id
+        if(!orderId){
+            return res.status(200).json({
+                status:'ERR',
+                message:"The orderId is required"
+            })
+        }
+        const response = await OrderService.paidOrder(orderId)
+        return res.status(200).json(response)
+
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+
+const comfirmDeliveryOrder = async (req,res)=>{
+    try {
+        const orderId = req.params.id
+        if(!orderId){
+            return res.status(200).json({
+                status:'ERR',
+                message:"The orderId is required"
+            })
+        }
+        const response = await OrderService.comfirmDeliveryOrder(orderId)
+        return res.status(200).json(response)
+
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
 module.exports = {
     createOrder,
     getAllOrder,
     getDetailsOrder,
     cancelOrderDetails,
-    getOrderAll
+    getOrderAll,
+    paidOrder,
+    comfirmDeliveryOrder
 }

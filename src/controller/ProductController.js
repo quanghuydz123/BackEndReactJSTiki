@@ -59,6 +59,9 @@ const getDetailsProduct = async (req,res)=>{
 
 const getAllProduct = async (req,res)=>{
     try {
+        // const date = new Date(); // Lấy thời gian hiện tại
+        // const isoString = date.toISOString(); // Chuyển đổi thành chuỗi theo định dạng ISO 8601
+        // console.log(isoString);
         const { limit , page ,sort ,filter} = req.query
         const response = await ProductService.getAllProduct(limit || 100 ,page || 1,sort, filter)
         return  res.status(200).json(response)
