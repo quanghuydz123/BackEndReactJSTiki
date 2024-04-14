@@ -76,6 +76,30 @@ const getCategoryByIdCategoryChild= async (req,res)=>{
     }
 }
 
+const getDetailsCategoryParent= async (req,res)=>{
+    try {
+        const response = await CategoryService.getDetailsCategoryParent(req.query)
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+
+const updateCategory = async (req,res)=>{
+    try {
+        const {idArr,image,nameArr} = req.body
+        const response = await CategoryService.updateCategory(idArr,image,nameArr)
+        return res.status(200).json(response)
+    } catch (error) {
+        return res.status(404).json({
+            message: error
+        })
+    }
+}
+
+
 
 
     module.exports = {
@@ -85,5 +109,7 @@ const getCategoryByIdCategoryChild= async (req,res)=>{
     getAllCategoryByIdparent,
     getAllCategoryChildAndParent,
     getAllCategory,
-    getCategoryByIdCategoryChild
+    getCategoryByIdCategoryChild,
+    getDetailsCategoryParent,
+    updateCategory
 }

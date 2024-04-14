@@ -15,14 +15,11 @@ router.get('/getAll',authMiddleWare, UserController.getAllUser)
 router.get('/get-details/:id',authUserMiddleWare, UserController.getDetailsUser) 
 router.post('/refresh-token', UserController.refreshToken)
 router.delete('/delete-many',authMiddleWare ,UserController.deleteManyUser)
-
 router.post('/send-opt',UserController.sendOptCreateAccount)
 router.post('/send-opt-forgot-password',UserController.sendOptForgotPassword)
-
 router.put('/forgot-password',UserController.forgotPassword)
 
 router.put('/restore-user/:id',authUserMiddleWare, UserController.restoreUser)
-
 
 router.put('/change-password', UserController.changePassword)
 
