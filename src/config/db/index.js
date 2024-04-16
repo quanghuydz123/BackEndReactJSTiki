@@ -1,7 +1,8 @@
 const { default: mongoose } = require('mongoose');
 
 
-function connect(){
+function connect()
+{
     mongoose.connect(`${process.env.MONGOOSE_DB}`)
     .then(()=>{
     console.log("connect success")
