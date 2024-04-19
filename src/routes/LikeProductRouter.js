@@ -6,6 +6,7 @@ const {authUserMiddleWare,authMiddleWare } = require('../middlleware/authMiddlew
 router.post('/create',LikeProductController.createLikeProduct)
 router.get('/get-details-like-product',LikeProductController.getDetailsLikeProduct)
 router.get('/count-like-products',LikeProductController.countLikeProducts)
+router.get('/get-all-productLikeByIdUser/:id',LikeProductController.getAllProductLikeByIdUser)
 
 
 module.exports = router

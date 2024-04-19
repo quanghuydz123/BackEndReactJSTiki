@@ -98,11 +98,31 @@ const countLikeProducts = ()=>{
         }
     })
 }
-
+const getAllProductLikeByIdUser = (userId,limit)=>{
+    return new Promise(async (resolve,reject)=>{
+        try{
+            const allProductLike = await LikeProduct.find({
+                user:userId,
+                like:true,
+            }).limit(limit).populate('product')
+            resolve({
+                status:"OK",
+                message:"Success",
+                data:allProductLike,
+                total:allProductLike.length
+            })
+            
+        }
+        catch(e){
+            reject(e)
+        }
+    })
+}
 
 
 module.exports = {
     createLikeProduct,
     getDetailsLikeProduct,
-    countLikeProducts
+    countLikeProducts,
+    getAllProductLikeByIdUser
 }

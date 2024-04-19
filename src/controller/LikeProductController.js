@@ -34,8 +34,23 @@ const createLikeProduct= async (req,res)=>{
             })
         }
     }
+    const getAllProductLikeByIdUser = async (req,res)=>{
+        try {
+            const userId = req.params.id
+            const {limit} = req.query
+            const response = await LikeProductService.getAllProductLikeByIdUser(userId,limit)
+            return res.status(200).json(response)
+        } catch (error) {
+            return res.status(404).json({
+                message: error
+            })
+        }
+    }
+    
     module.exports = {
     createLikeProduct,
     getDetailsLikeProduct,
-    countLikeProducts
+    countLikeProducts,
+    getAllProductLikeByIdUser
+
 }
