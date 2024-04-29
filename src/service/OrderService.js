@@ -65,6 +65,7 @@ const   createOrder = (newOrder) => {
                         isPaid,
                         paidAt, 
                         user: user,
+                        status:true
                     })
                     if (createOrder) {
                         //await EmailService.sendEmailCreateOrder(email,orderItems) // gửi thông tin mua hàng đến gmail
@@ -171,6 +172,8 @@ const cancelOrderDetails = (id,data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let order = []
+            const date = new Date(); // Lấy thời gian hiện tại
+            const isoString = date.toISOString(); // Chuyển đổi thành chuỗi theo định dạng ISO 8601
             const promises = data.map(async (order,index) => {
                 const productData = await Product.findOneAndUpdate(
                     {
@@ -185,7 +188,7 @@ const cancelOrderDetails = (id,data) => {
                 )
                 if(productData) {
                     if(index === data.length-1){
-                        order = await Order.findByIdAndDelete(id)
+                        order = await Order.findByIdAndUpdate(id,{status:false,cancelAt:isoString},{new:true})
                         if (order === null) {
                             resolve({
                                 status: 'ERR',
