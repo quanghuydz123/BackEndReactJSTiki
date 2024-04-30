@@ -49,7 +49,9 @@ const   createOrder = (newOrder) => {
                     status: 'ERR',
                     message: `Sản phẩm với id${newData.join(', ')} không đủ hàng`
                   });
-                }else{
+                }
+                else
+                {
                     const createOrder = await Order.create({
                         orderItems,
                         shippingAddress: {
@@ -67,7 +69,8 @@ const   createOrder = (newOrder) => {
                         user: user,
                         status:true
                     })
-                    if (createOrder) {
+                    if (createOrder) 
+                    {
                         //await EmailService.sendEmailCreateOrder(email,orderItems) // gửi thông tin mua hàng đến gmail
                         resolve( {
                             status: "OK",
