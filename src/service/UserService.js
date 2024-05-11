@@ -9,12 +9,12 @@ const createUser = (newUser)=>{
             const checkUser = await User.findOne({
                 email:email
             })
-            if(checkUser!==null){
-                resolve({
-                    status :"ERR",
-                    message:"The email on already"
-                })
-            }
+            // if(checkUser!==null){
+            //     resolve({
+            //         status :"ERR",
+            //         message:"The email on already"
+            //     })
+            // }
             const hash = bcrypt.hashSync(password,10) //mã hóa password
             const createUser = await User.create({
                 name,
@@ -97,7 +97,8 @@ const updateUser = (userId,data)=>{
             const checkUserName = await User.findOne({
                 email:data.email
             })
-            if(checkUserId===null){
+            if(checkUserId===null)
+            {
                 resolve({
                     status :"ERR",
                     message:"The user is not defined"
@@ -225,12 +226,12 @@ const forgotPassword = (newUser)=>{
             const checkUser = await User.findOne({
                 email:email
             })
-            if(checkUser===null){
-                resolve({
-                    status :"ERR",
-                    message:"Email không tồn tại"
-                })
-            }
+            // if(checkUser===null){
+            //     resolve({
+            //         status :"ERR",
+            //         message:"Email không tồn tại"
+            //     })
+            // }
             const hash = bcrypt.hashSync(password,10) //mã hóa passwor
             const UserUpdatePassword = await User.findByIdAndUpdate(checkUser._id,{password:hash},{new:true})
             if(UserUpdatePassword){

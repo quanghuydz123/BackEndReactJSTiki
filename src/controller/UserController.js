@@ -13,12 +13,14 @@ const   createUser= async (req,res)=>{
                 status:'ERR',
                 message:"The input is required"
             })
-        }else if (!isCheckEmail){
-            return res.status(404).json({
-                status:'ERR',
-                message:"The input is email"
-            })
-        }else if(password !== confirmPassword){
+        }
+        // else if (!isCheckEmail){
+        //     return res.status(404).json({
+        //         status:'ERR',
+        //         message:"The input is email"
+        //     })
+        // }else 
+        if(password !== confirmPassword){
             return res.status(404).json({
                 status:'ERR',
                 message:"The password is equal confirmPassword"
@@ -257,12 +259,14 @@ const forgotPassword= async (req,res)=>{
                 status:'ERR',
                 message:"The input is required"
             })
-        }else if (!isCheckEmail){
-            return res.status(404).json({
-                status:'ERR',
-                message:"The input is email"
-            })
-        }else if(password !== confirmPassword){
+        }
+        // else if (!isCheckEmail){
+        //     return res.status(404).json({
+        //         status:'ERR',
+        //         message:"The input is email"
+        //     })
+        // }else 
+        if(password !== confirmPassword){
             return res.status(404).json({
                 status:'ERR',
                 message:"The password is equal confirmPassword"
