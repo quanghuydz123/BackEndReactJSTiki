@@ -91,12 +91,12 @@ const cancelOrderDetails = async (req, res) => {
 const paidOrder = async (req,res)=>{
     try {
         const orderId = req.params.id
-        if(!orderId){
-            return res.status(200).json({
-                status:'ERR',
-                message:"The orderId is required"
-            })
-        }
+        // if(!orderId){
+        //     return res.status(200).json({
+        //         status:'ERR',
+        //         message:"The orderId is required"
+        //     })
+        // }
         const response = await OrderService.paidOrder(orderId)
         return res.status(200).json(response)
 
@@ -110,12 +110,12 @@ const paidOrder = async (req,res)=>{
 const comfirmDeliveryOrder = async (req,res)=>{
     try {
         const orderId = req.params.id
-        if(!orderId){
-            return res.status(200).json({
-                status:'ERR',
-                message:"The orderId is required"
-            })
-        }
+        // if(!orderId){
+        //     return res.status(200).json({
+        //         status:'ERR',
+        //         message:"The orderId is required"
+        //     })
+        // }
         const response = await OrderService.comfirmDeliveryOrder(orderId)
         return res.status(200).json(response)
 

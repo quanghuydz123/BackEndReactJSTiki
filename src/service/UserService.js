@@ -284,12 +284,12 @@ const changePassword = (newUser)=>{
             const checkUser = await User.findOne({
                 email:email
             })
-            if(checkUser===null){
-                resolve({
-                    status :"ERR",
-                    message:"Email không tồn tại"
-                })
-            }
+            // if(checkUser===null){
+            //     resolve({
+            //         status :"ERR",
+            //         message:"Email không tồn tại"
+            //     })
+            // }
             const comparePassword = bcrypt.compareSync(password,checkUser.password)
             if(!comparePassword){
                 resolve({
