@@ -234,18 +234,17 @@ const cancelOrderDetails = (id,data) => {
                 const checkOrderId = await Order.findOne({
                     _id:OrderId
                 })
-                // if(checkOrderId===null){
-                //     resolve({
-                //         status :"ERR",
-                //         message:"The order is not defined"
-                //     })
-                // }else if(checkOrderId?.isPaid){
-                //     resolve({
-                //         status :"ERR",
-                //         message:"Đơn hàng này đã thanh toán rồi mà"
-                //     })
-                // }
-                // console.log("checkOrderId",checkOrderId)
+                if(checkOrderId===null){
+                    resolve({
+                        status :"ERR",
+                        message:"The order is not defined"
+                    })
+                }else if(checkOrderId?.isPaid){
+                    resolve({
+                        status :"ERR",
+                        message:"Đơn hàng này đã thanh toán rồi mà"
+                    })
+                }
                 const updateOrder = await Order.findByIdAndUpdate(OrderId,{isPaid:true,paidAt:isoString},{new:true})
                 resolve({
                     status:"Thanh toán thành công",
@@ -268,17 +267,17 @@ const cancelOrderDetails = (id,data) => {
                 const checkOrderId = await Order.findOne({
                     _id:OrderId
                 })
-                // if(checkOrderId===null){
-                //     resolve({
-                //         status :"ERR",
-                //         message:"The order is not defined"
-                //     })
-                // }else if(checkOrderId?.isDelivered){
-                //     resolve({
-                //         status :"ERR",
-                //         message:"Đơn hàng này đã xác nhận giao hàng rồi mà"
-                //     })
-                // }
+                if(checkOrderId===null){
+                    resolve({
+                        status :"ERR",
+                        message:"The order is not defined"
+                    })
+                }else if(checkOrderId?.isDelivered){
+                    resolve({
+                        status :"ERR",
+                        message:"Đơn hàng này đã xác nhận giao hàng rồi mà"
+                    })
+                }
                 const updateOrder = await Order.findByIdAndUpdate(OrderId,{isDelivered:true,deliveredAt:isoString},{new:true})
                 resolve({
                     status:"OK",
