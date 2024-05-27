@@ -20,7 +20,7 @@ app.use(cookieParser())//phải khai báo để lấy cookie
 routes(app)
 //connectDB
 connectDB.connect()
-console.log("123123",process.env.MONGOOSE_DB)
+
 app.listen(port,()=>{
     console.log("Sever is running in port: "+port )
 })
